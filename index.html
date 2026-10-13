@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulasi TKA - Latihan Mandiri</title>
+<style>
+:root{--blue:#2457d6;--navy:#132b62;--bg:#f2f5fb;--ink:#182238;--muted:#64748b;--line:#dfe6f1;--green:#14845b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{background:linear-gradient(125deg,#122b62,#3476f4);color:#fff;padding:24px 16px 42px}header>div{max-width:950px;margin:auto}.eyebrow{font-size:12px;letter-spacing:1.5px;opacity:.8;font-weight:800}h1{font-size:clamp(24px,5vw,34px);margin:8px 0;cursor:pointer;display:inline-block}h1:active{opacity:.8}header p{margin:0;color:#e4edff}
+.wrap{max-width:950px;margin:-20px auto 60px;padding:0 14px}.card{background:white;border:1px solid var(--line);border-radius:18px;padding:clamp(18px,4vw,28px);box-shadow:0 12px 34px #172d5810}
+#setup h2{margin:0 0 6px;font-size:22px}.sub{color:var(--muted);font-size:14px;margin:0 0 20px}.field{margin:18px 0}.field label{display:block;font-weight:750;margin-bottom:9px}.choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.choice{border:1.5px solid var(--line);background:#fff;border-radius:13px;padding:14px 10px;text-align:left;cursor:pointer;min-height:74px;color:var(--ink)}.choice b{display:block;font-size:15px}.choice span{display:block;color:var(--muted);font-size:12px;margin-top:3px}.choice.active{border-color:var(--blue);background:#eef4ff;box-shadow:0 0 0 2px #2457d615}.select{width:100%;border:1px solid var(--line);border-radius:11px;padding:13px;background:white;font:inherit}.start{width:100%;margin-top:12px;background:var(--blue);color:white;border:0;border-radius:12px;padding:15px;font:inherit;font-weight:800;cursor:pointer}.start:disabled{opacity:.4;cursor:not-allowed}.hint{font-size:12px;color:var(--muted);line-height:1.6}
+#test{display:none}.layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:15px}.topline{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;color:var(--muted);font-size:13px}.pill{background:#edf3ff;color:#234cb3;padding:5px 10px;border-radius:30px;font-size:12px;font-weight:800}.progress{height:7px;background:#e9eef7;border-radius:20px;margin:15px 0 22px;overflow:hidden}.progress span{height:100%;width:0;display:block;background:var(--blue);transition:width .3s}h2.question{font-size:21px;line-height:1.45;margin:10px 0 20px}.opts{display:grid;gap:10px}.opt{display:flex;align-items:flex-start;gap:11px;padding:13px;border:1px solid var(--line);border-radius:12px;cursor:pointer}.opt:has(input:checked){background:#eef4ff;border-color:var(--blue)}.opt input{margin-top:5px;accent-color:var(--blue)}.buttons{display:flex;justify-content:space-between;gap:8px;margin-top:22px;flex-wrap:wrap}button{font:inherit}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer}.blue{background:var(--blue);color:white}.gray{background:#eaf0f8;color:#25334d}.green{background:var(--green);color:white}.btn:disabled{opacity:.4}.side h3{font-size:16px;margin:0 0 5px}.side p{font-size:12px;color:var(--muted);margin:0}.numbers{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:14px 0}.num{background:#edf1f7;color:#39465e;padding:9px 0;border:0;border-radius:8px;font-weight:750}.num.active{background:var(--blue);color:white}.num.done{outline:2px solid #52b68b;outline-offset:-2px}.smallnote{background:#f0f6ff;border-radius:10px;padding:11px;font-size:12px;color:#345078;line-height:1.5}
+#results{display:none;animation:rise .5s ease-out}@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}.score{font-size:46px;color:var(--blue);font-weight:900;margin:6px 0}.review{padding:12px 0;border-bottom:1px solid var(--line);font-size:14px;line-height:1.6}.celebrate{font-size:28px;animation:bounce 1s infinite alternate}@keyframes bounce{to{transform:translateY(-5px)}}
+#robot{position:fixed;right:16px;bottom:16px;width:62px;height:62px;border-radius:50%;border:0;background:linear-gradient(145deg,#6d8cff,#2457d6);box-shadow:0 8px 24px #2457d655;font-size:31px;cursor:pointer;z-index:5;animation:float 2.7s ease-in-out infinite}#robot.hidden{display:none}@keyframes float{50%{transform:translateY(-8px)}}
+#botbox{display:none;position:fixed;right:14px;bottom:88px;width:min(340px,calc(100vw - 28px));padding:16px;background:#fff;border:1px solid var(--line);border-radius:17px;box-shadow:0 12px 40px #172d5830;z-index:6;font-size:14px;line-height:1.6}#botbox.show{display:block}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#172238;color:white;border-radius:10px;padding:10px 14px;display:none;z-index:10;font-size:13px;max-width:90vw}
+@media(max-width:700px){.choices{grid-template-columns:1fr}.choice{min-height:0;display:flex;align-items:center;justify-content:space-between}.layout{grid-template-columns:1fr}.side{order:-1}.numbers{grid-template-columns:repeat(10,1fr)}.card{padding:17px}}
+</style></head><body>
+<header><div><div class="eyebrow">LATIHAN MANDIRI • SIMULASI</div><h1 id="simTitle" title="Ketuk untuk menampilkan atau menyembunyikan robot">Simulasi TKA</h1><p>Pilih jenjang dan mata pelajaran, lalu mulai ujian latihan.</p></div></header>
+<div class="wrap">
+<section class="card" id="setup">
+<h2>Persiapan ujian</h2><p class="sub">Lengkapi pilihan di bawah sebelum memulai.</p>
+<div class="field"><label>1. Jenjang pendidikan</label><div class="choices" id="levels">
+<button class="choice active" data-level="SMP/MTs"><b>🏫 SMP / MTs</b><span>Kelas 7–9</span></button>
+<button class="choice" data-level="SMA/MA"><b>🎓 SMA / MA</b><span>Kelas 10–12</span></button>
+<button class="choice" data-level="SMK"><b>🧰 SMK</b><span>Sekolah kejuruan</span></button>
+</div></div>
+<div class="field"><label for="grade">2. Kelas</label><select class="select" id="grade"><option value="7">Kelas 7</option><option value="8">Kelas 8</option><option value="9" selected>Kelas 9</option></select></div>
+<div class="field"><label>3. Jenis mata pelajaran</label><div class="choices" id="subjects">
+<button class="choice active" data-subject="Matematika"><b>➗ Matematika</b><span>Bilangan, aljabar, geometri</span></button>
+<button class="choice" data-subject="Bahasa Indonesia"><b>📖 Bahasa Indonesia</b><span>Memahami teks dan informasi</span></button>
+<button class="choice" data-subject="Bahasa Inggris"><b>🌐 Bahasa Inggris</b><span>Reading and vocabulary</span></button>
+</div></div>
+<p class="hint" id="subjectHint">Untuk simulasi TKA resmi, mata pelajaran yang tersedia berbeda menurut jenjang. Ini adalah latihan mandiri dengan pilihan fleksibel.</p>
+<button class="start" id="start">🚀 MULAI LATIHAN</button>
+</section>
+<section id="test">
+<div class="layout">
+<div class="card">
+<div class="topline"><span class="pill" id="testInfo">SMP/MTs · Matematika</span><span id="qcount">Soal 1 dari 10</span></div>
+<div class="progress"><span id="progress"></span></div>
+<div id="questionArea"><div class="topline"><b id="topic">Topik</b><span>Pilih satu jawaban</span></div><h2 class="question" id="qtext"></h2><div class="opts" id="opts"></div>
+<div class="buttons"><button class="btn gray" id="prev">← Sebelumnya</button><button class="btn blue" id="next">Berikutnya →</button></div></div>
+<div id="results"><div class="celebrate">🎉 ✨ 🎉</div><h2>Latihan selesai!</h2><div class="score" id="score">0/100</div><p id="scoreDetail"></p><div id="review"></div><div class="buttons"><button class="btn gray" id="backSetup">Ganti pilihan</button><button class="btn blue" id="retry">🔄 Ulangi ujian</button></div></div>
+</div>
+<aside class="card side"><h3>Nomor soal</h3><p>Hijau = sudah dijawab</p><div class="numbers" id="numbers"></div><div class="smallnote">🤖 Ketuk robot untuk bantuan jawaban soal latihan ini. Ketuk tulisan “Simulasi TKA” untuk menampilkan atau menyembunyikan robot.</div><button class="btn green" id="check" style="width:100%;margin-top:14px">Cek nilai ✓</button></aside>
+</div>
+</section>
+</div>
+<button id="robot" class="hidden" title="Ketuk untuk bantuan">🤖</button><div id="botbox"><b>🤖 Robo Matematika</b><button class="btn gray" id="closebot" style="float:right;padding:5px 9px">Tutup</button><p id="botmsg">Aku bisa membantu soal latihan yang sedang kamu buka.</p><button class="btn blue" id="botanswer">Jawab otomatis soal latihan</button></div><div class="toast" id="toast"></div>
+<script>
+const banks={
+"Matematika":[
+{t:"Bilangan",q:"Sebuah jaket seharga Rp160.000 mendapat diskon 25%. Harga setelah diskon adalah …",o:["Rp100.000","Rp120.000","Rp125.000","Rp140.000"],a:1,w:"Diskon = 25% × Rp160.000 = Rp40.000. Harga akhir = Rp160.000 − Rp40.000 = Rp120.000.",h:"Cari 25% dari harga awal, lalu kurangi."},
+{t:"Bilangan",q:"Hasil dari 3² + √49 × 2 adalah …",o:["23","25","31","35"],a:0,w:"3² = 9 dan √49 = 7. Kerjakan perkalian dahulu: 9 + 7 × 2 = 23.",h:"Ingat urutan operasi: pangkat/akar, perkalian, lalu penjumlahan."},
+{t:"Aljabar",q:"Jika x + y = 13 dan x − y = 5, nilai x adalah …",o:["4","8","9","18"],a:2,w:"Jumlahkan persamaan: 2x = 18, sehingga x = 9.",h:"Jumlahkan kedua persamaan agar y hilang."},
+{t:"Aljabar",q:"Bentuk sederhana 4(2x − 3) + 5x adalah …",o:["8x − 12","13x − 12","13x + 12","8x + 2"],a:1,w:"4(2x − 3) = 8x − 12. Tambahkan 5x, hasilnya 13x − 12.",h:"Kalikan angka di luar kurung ke setiap suku."},
+{t:"Pola bilangan",q:"Barisan 5, 9, 13, 17, … Suku ke-10 adalah …",o:["37","39","41","45"],a:2,w:"Beda = 4. U₁₀ = 5 + (10 − 1) × 4 = 41.",h:"Gunakan rumus Uₙ = a + (n−1)b."},
+{t:"Geometri",q:"Segitiga siku-siku memiliki sisi siku-siku 6 cm dan 8 cm. Sisi miringnya …",o:["9 cm","10 cm","12 cm","14 cm"],a:1,w:"c² = 6² + 8² = 36 + 64 = 100, maka c = 10 cm.",h:"Gunakan Teorema Pythagoras."},
+{t:"Geometri",q:"Lingkaran berjari-jari 7 cm. Jika π = 22/7, luasnya …",o:["44 cm²","88 cm²","154 cm²","308 cm²"],a:2,w:"L = πr² = 22/7 × 7 × 7 = 154 cm².",h:"Luas lingkaran = π × r × r."},
+{t:"Pengukuran",q:"Balok berukuran 8 cm × 5 cm × 4 cm. Volumenya adalah …",o:["80 cm³","120 cm³","160 cm³","180 cm³"],a:2,w:"Volume = panjang × lebar × tinggi = 8 × 5 × 4 = 160 cm³.",h:"Kalikan panjang, lebar, dan tinggi."},
+{t:"Statistika",q:"Data 4, 7, 5, 9, 5. Median data tersebut adalah …",o:["4","5","6","7"],a:1,w:"Urutkan: 4, 5, 5, 7, 9. Nilai tengah adalah 5.",h:"Urutkan data terlebih dahulu, lalu cari nilai tengah."},
+{t:"Peluang",q:"Dadu bersisi enam dilempar sekali. Peluang muncul angka genap adalah …",o:["1/6","1/3","1/2","2/3"],a:2,w:"Angka genap 2, 4, 6. Peluang = 3/6 = 1/2.",h:"Bandingkan jumlah hasil yang diinginkan dengan jumlah seluruh kemungkinan."}
+],
+"Bahasa Indonesia":[
+{t:"Memahami teks",q:"Bacalah: “Pohon di tepi jalan membuat udara lebih sejuk. Akarnya juga membantu air meresap ke tanah.” Gagasan utama teks tersebut adalah …",o:["Pohon harus ditebang","Manfaat pohon di tepi jalan","Air selalu mengalir di jalan","Akar pohon merusak tanah"],a:1,w:"Kedua kalimat menjelaskan manfaat pohon, yaitu menyejukkan udara dan membantu penyerapan air.",h:"Cari ide yang mencakup seluruh informasi dalam teks."},
+{t:"Simpulan",q:"“Rani membawa botol minum sendiri setiap hari. Ia ingin mengurangi sampah plastik sekali pakai.” Simpulan yang tepat adalah …",o:["Rani tidak suka minum","Rani berupaya mengurangi sampah plastik","Botol minum selalu mahal","Sampah plastik mudah terurai"],a:1,w:"Teks menyatakan Rani membawa botol sendiri dengan tujuan mengurangi sampah plastik.",h:"Hubungkan tindakan Rani dengan tujuan yang disebutkan."},
+{t:"Makna kata",q:"Makna kata “lestari” pada kalimat “Kita menjaga hutan agar tetap lestari” adalah …",o:["Tetap terjaga dan tidak rusak","Cepat berubah","Menjadi semakin sempit","Tidak berpenghuni"],a:0,w:"Lestari berarti tetap seperti keadaan semula, terpelihara, dan tidak rusak.",h:"Pilih makna yang sesuai dengan konteks menjaga hutan."},
+{t:"Fakta dan opini",q:"Kalimat yang berupa fakta adalah …",o:["Pantai itu paling indah","Menurut saya, buku ini bagus","Air membeku pada suhu 0°C pada tekanan normal","Film itu sangat membosankan"],a:2,w:"Pernyataan tentang titik beku air dapat diuji secara objektif. Pilihan lain berupa pendapat.",h:"Fakta dapat dibuktikan, sedangkan opini berisi penilaian."},
+{t:"Tujuan teks",q:"Teks yang berisi langkah-langkah membuat sesuatu disebut teks …",o:["Deskripsi","Prosedur","Puisi","Anekdot"],a:1,w:"Teks prosedur memuat tujuan serta langkah-langkah melakukan atau membuat sesuatu.",h:"Perhatikan kata “langkah-langkah”."}
+],
+"Bahasa Inggris":[
+{t:"Vocabulary",q:"Choose the closest meaning of “beautiful”.",o:["Ugly","Pretty","Angry","Tired"],a:1,w:"“Beautiful” means attractive or pretty.",h:"Think of a synonym for something that looks nice."},
+{t:"Reading",q:"Read: “Tom wakes up at six. He eats breakfast and walks to school.” How does Tom go to school?",o:["By bus","By car","On foot","By train"],a:2,w:"The text says Tom “walks to school”, so he goes on foot.",h:"Find the phrase that tells how Tom travels."},
+{t:"Grammar",q:"Choose the correct sentence.",o:["She go to school every day.","She goes to school every day.","She going to school every day.","She gone to school every day."],a:1,w:"For he/she/it in the simple present, the verb usually takes -s or -es: “She goes”.",h:"For a singular third-person subject, check the verb ending."},
+{t:"Vocabulary",q:"The opposite of “difficult” is …",o:["Hard","Easy","Heavy","Late"],a:1,w:"The opposite of difficult is easy.",h:"Choose the word that means not hard."},
+{t:"Reading",q:"Read: “Mia has two cats. Their names are Milo and Luna.” How many cats does Mia have?",o:["One","Two","Three","Four"],a:1,w:"The text directly says Mia has two cats.",h:"Look for the number in the first sentence."}
+]};
+let level="SMP/MTs", subject="Matematika", grade="9", qs=[], answers=[], idx=0, ended=false, visible=false;
+const $=id=>document.getElementById(id);
+document.querySelectorAll("#levels .choice").forEach(b=>b.onclick=()=>{document.querySelectorAll("#levels .choice").forEach(x=>x.classList.remove("active"));b.classList.add("active");level=b.dataset.level;const opts=level==="SMP/MTs"?["7","8","9"]:level==="SMA/MA"?["10","11","12"]:["10","11","12"]; $("grade").innerHTML=opts.map(n=>`<option value="${n}" ${n=== (level==="SMP/MTs"?"9":"10")?"selected":""}>Kelas ${n}</option>`).join("");grade=$("grade").value;});
+$("grade").onchange=()=>grade=$("grade").value;
+document.querySelectorAll("#subjects .choice").forEach(b=>b.onclick=()=>{document.querySelectorAll("#subjects .choice").forEach(x=>x.classList.remove("active"));b.classList.add("active");subject=b.dataset.subject;});
+$("start").onclick=()=>{grade=$("grade").value;qs=[...banks[subject]];answers=Array(qs.length).fill(null);idx=0;ended=false;$("setup").style.display="none";$("test").style.display="block";$("questionArea").style.display="block";$("results").style.display="none";$("check").style.display="block";$("testInfo").textContent=`${level} · Kelas ${grade} · ${subject}`;render();window.scrollTo({top:0,behavior:"smooth"});};
+function render(){if(ended)return;let q=qs[idx];$("qcount").textContent=`Soal ${idx+1} dari ${qs.length}`;$("progress").style.width=((idx+1)/qs.length*100)+"%";$("topic").textContent=q.t;$("qtext").textContent=q.q;$("opts").innerHTML=q.o.map((v,i)=>`<label class="opt"><input type="radio" name="ans" value="${i}" ${answers[idx]===i?"checked":""}><span><b>${"ABCD"[i]}.</b> ${v}</span></label>`).join("");document.querySelectorAll('input[name="ans"]').forEach(el=>el.onchange=e=>{answers[idx]=+e.target.value;renderNumbers()});$("prev").disabled=idx===0;$("next").textContent=idx===qs.length-1?"Selesai →":"Berikutnya →";renderNumbers();}
+function renderNumbers(){$("numbers").innerHTML=qs.map((q,i)=>`<button class="num ${i===idx?"active":""} ${answers[i]!==null?"done":""}" onclick="jump(${i})">${i+1}</button>`).join("");}
+function jump(i){idx=i;render()}$("prev").onclick=()=>{if(idx>0){idx--;render()}};$("next").onclick=()=>{if(idx<qs.length-1){idx++;render()}else checkScore()};$("check").onclick=()=>{if(confirm("Periksa jawaban dan lihat nilai sekarang?"))checkScore()};
+function checkScore(){ended=true;$("questionArea").style.display="none";$("results").style.display="block";$("check").style.display="none";const right=answers.reduce((n,a,i)=>n+(a===qs[i].a?1:0),0),score=Math.round(right/qs.length*100);$("score").textContent=score+"/100";$("scoreDetail").textContent=`${right} dari ${qs.length} jawaban benar · ${level}, kelas ${grade} · ${subject}`;$("review").innerHTML=qs.map((q,i)=>`<div class="review"><b>${i+1}. ${q.t}</b><br><span style="color:${answers[i]===q.a?"#14845b":"#c2410c"}">${answers[i]===null?"Belum dijawab":answers[i]===q.a?"Benar":"Belum tepat"}</span><br>Jawaban: <b>${"ABCD"[q.a]}. ${q.o[q.a]}</b><br>${q.w}</div>`).join("");window.scrollTo({top:0,behavior:"smooth"});}
+function retry(){answers=Array(qs.length).fill(null);idx=0;ended=false;$("results").style.display="none";$("questionArea").style.display="block";$("check").style.display="block";render();window.scrollTo({top:0,behavior:"smooth"})}
+$("retry").onclick=retry;$("backSetup").onclick=()=>{$("test").style.display="none";$("setup").style.display="block";window.scrollTo({top:0,behavior:"smooth"})};
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>$("toast").style.display="none",2400)}
+$("robot").onclick=()=>{if(!qs.length){toast("Pilih jenjang dan mata pelajaran, lalu tekan Mulai.");return}if(ended){toast("Latihan sudah selesai. Tekan Ulangi ujian untuk mulai lagi.");return}let q=qs[idx];answers[idx]=q.a;render();$("botmsg").innerHTML=`Jawaban latihan soal ${idx+1}: <b>${"ABCD"[q.a]}. ${q.o[q.a]}</b><br>${q.w}`;$("botbox").classList.add("show");toast("Robot membantu soal latihan yang sedang dibuka.");};
+$("closebot").onclick=()=>$("botbox").classList.remove("show");$("botanswer").onclick=()=>{$("robot").click();};
+$("simTitle").onclick=()=>{visible=!visible;$("robot").classList.toggle("hidden",!visible);$("botbox").classList.remove("show");toast(visible?"Robot muncul!":"Robot disembunyikan.");};
+</script></body></html>
